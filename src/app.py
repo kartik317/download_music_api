@@ -104,3 +104,19 @@ async def download(url: str, background_tasks: BackgroundTasks):
             
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Download failed: {str(e)}")
+    
+
+import threading
+import requests
+import time
+
+def keep_alive():
+    while True:
+        time.sleep(300)  # 5 minutes
+        try:
+            requests.get("https://yourapp.onrender.com")
+        except:
+            pass
+
+# Start in a separate thread
+threading.Thread(target=keep_alive, daemon=True).start()
