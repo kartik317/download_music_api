@@ -42,16 +42,25 @@ def _safe_remove(path: str):
 
 
 def create_temp_cookies_file(unique_id: str) -> str:
-    """Create a temporary cookies file from base64 environment variable"""
-    cookies_base64 = os.getenv('COOKIES_BASE64')
+    """Create a temporary cookies file from multiple environment variables"""
+    # Get all parts
+    parts = []
+    i = 1
+    while True:
+        part = os.getenv(f'COOKIES_PART_{i}')
+        if not part:
+            break
+        parts.append(part)
+        i += 1
     
-    if not cookies_base64:
-        print("Warning: COOKIES_BASE64 environment variable not set")
+    if not parts:
+        print("Warning: No cookies parts found")
         return None
     
     try:
-        # Decode base64 string to get cookies content
-        cookies_content = base64.b64decode(cookies_base64).decode('utf-8')
+        # Combine all parts
+        full_base64 = ''.join(parts)
+        cookies_content = base64.b64decode(full_base64).decode('utf-8')
         
         # Create a temporary cookies file
         temp_cookie_file = os.path.join(DOWNLOAD_DIR, f'cookies_{unique_id}.txt')
@@ -59,7 +68,6 @@ def create_temp_cookies_file(unique_id: str) -> str:
         with open(temp_cookie_file, 'w') as f:
             f.write(cookies_content)
         
-        print(f"Created temporary cookies file: {temp_cookie_file}")
         return temp_cookie_file
         
     except Exception as e:
