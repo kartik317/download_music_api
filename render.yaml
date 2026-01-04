@@ -1,9 +1,11 @@
 services:
   - type: web
-    name: fastapi-app
-    env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn main:app --host 0.0.0.0 --port 10000
+    name: youtube-audio-api
+    env: node
+    buildCommand: npm install
+    startCommand: node app.js
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.0
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
